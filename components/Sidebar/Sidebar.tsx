@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { storage } from "wxt/storage";
 interface IFriends {
   name: string;
   image: string;
@@ -12,54 +11,41 @@ const Sidebar = () => {
   const [friends, setFriend] = useState<IFriends[]>([]);
 
   const handleCloseSidebar = async () => {
-    await storage.setItem("local:delete-facebook-message-sidebar", "close");
-    const sidebar = document.getElementById("delete-facebook-message-sidebar");
-    if (sidebar) {
-      sidebar.style.display = "none";
-    }
-    const facebookTabs = await browser.tabs.query({
-      url: "*://*.facebook.com/messages*",
-    });
-
-    await Promise.all(
-      facebookTabs.map((tab) => tab.id && browser.tabs.reload(tab.id))
-    );
+    document.getElementById("fb-sidebar-container")?.remove();
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      const extractChats = () => {
-        let persons: IFriends[] = [];
-        const chatContainer = document.querySelector('[aria-label="Chats"]');
+    const extractChats = () => {
+      let persons: IFriends[] = [];
+      const chatContainer = document.querySelector('[aria-label="Chats"]');
 
-        if (chatContainer) {
-          const chatDivs = chatContainer.querySelectorAll(
-            'div.x78zum5.xdt5ytf[data-virtualized="false"]'
-          );
+      if (chatContainer) {
+        const chatDivs = chatContainer.querySelectorAll(
+          'div.x78zum5.xdt5ytf[data-virtualized="false"]'
+        );
 
-          chatDivs.forEach((chatDiv, idx) => {
-            const firstSpan = chatDiv.querySelector("span");
-            const firstImage = chatDiv.querySelector("img");
-            if (firstSpan && firstImage) {
-              persons.push({
-                image: firstImage.src,
-                name: firstSpan.innerText,
-                id: idx + 1,
-                innerHtml: chatDiv,
-              });
-            }
-          });
-
-          if (persons?.length > 0) {
-            setFriend(persons);
+        chatDivs.forEach((chatDiv, idx) => {
+          const firstSpan = chatDiv.querySelector("span");
+          const firstImage = chatDiv.querySelector("img");
+          if (firstSpan && firstImage) {
+            persons.push({
+              image: firstImage.src,
+              name: firstSpan.innerText,
+              id: idx + 1,
+              innerHtml: chatDiv,
+            });
           }
-        } else {
-          console.log("Chats container not found");
-        }
-      };
+        });
 
-      extractChats();
-    }, 10000);
+        if (persons?.length > 0) {
+          setFriend(persons);
+        }
+      } else {
+        console.log("Chats container not found");
+      }
+    };
+
+    extractChats();
   }, [extractFriend]);
 
   const deleteSelectedChats = () => {
@@ -82,24 +68,28 @@ const Sidebar = () => {
             ) as HTMLElement;
             if (deleteChatDiv) {
               deleteChatDiv.click();
-              setTimeout(() => {
-                const deleteModal = document.querySelector(
-                  '[aria-label="Delete chat"][role="dialog"]'
+              // setTimeout(() => {
+              const deleteModal = document.querySelector(
+                '[aria-label="Delete chat"][role="dialog"]'
+              );
+              if (deleteModal) {
+                const deleteButtons = deleteModal.querySelectorAll(
+                  '[aria-label="Delete chat"][role="button"]'
                 );
-                if (deleteModal) {
-                  const deleteButtons = deleteModal.querySelectorAll(
-                    '[aria-label="Delete chat"][role="button"]'
-                  );
 
-                  const lastDeleteButton = deleteButtons[
-                    deleteButtons.length - 1
-                  ] as HTMLElement;
-                  if (lastDeleteButton) {
-                    lastDeleteButton.click();
-                    setExtractFriend((prev) => !prev);
-                  }
+                const lastDeleteButton = deleteButtons[
+                  deleteButtons.length - 1
+                ] as HTMLElement;
+                if (lastDeleteButton) {
+                  lastDeleteButton.click();
+                  window.location.reload();
+                  setFriend((prevFriends) =>
+                    prevFriends.filter((f) => !selectedFriend.includes(f))
+                  );
+                  setExtractFriend((prev) => !prev);
                 }
-              }, 500);
+              }
+              // }, 500);
             }
           } else {
             console.log("Menu not found, maybe still loading...");
@@ -110,11 +100,9 @@ const Sidebar = () => {
       }
     });
   };
-
   console.log(friends);
   return (
     <div
-      id="delete-facebook-message-sidebar"
       style={{
         position: "fixed",
         right: 0,
@@ -127,10 +115,26 @@ const Sidebar = () => {
         maxHeight: "100vh",
       }}
     >
-      <button onClick={handleCloseSidebar} className="cursor-pointer">
-        Close
-      </button>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", justifyContent: "end" }}>
+        <button
+          onClick={handleCloseSidebar}
+          style={{
+            position: "absolute",
+            top: "0px",
+            right: "0px",
+            cursor: "pointer",
+          }}
+        >
+          Close
+        </button>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "15px",
+        }}
+      >
         <div style={{ display: "flex" }}>
           <p>Select All</p>
           <input
@@ -144,7 +148,7 @@ const Sidebar = () => {
         <button
           onClick={deleteSelectedChats}
           style={{
-            backgroundColor: "red",
+            backgroundColor: "#2196f3",
             color: "white",
             borderRadius: "5px",
             cursor: "pointer",

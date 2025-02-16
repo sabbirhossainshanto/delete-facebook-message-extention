@@ -10,5 +10,11 @@ export default defineConfig({
     description:
       "A browser extension to delete and archive Facebook messages in bulk.",
     permissions: ["storage", "scripting", "activeTab"],
+    content_scripts: [
+      {
+        matches: ["<all_urls>"],
+        js: ["content-script/content.js"],
+      },
+    ],
   },
 });

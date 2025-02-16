@@ -16,8 +16,11 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.6",
+    "i18next": "^24.2.2",
+    "jotai": "^2.12.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-i18next": "^15.4.0"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.280",
