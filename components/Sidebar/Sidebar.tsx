@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "@/entrypoints/popup/App.css";
 import toast, { Toaster } from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
+import { useTranslation } from "react-i18next";
 interface IFriends {
   name: string;
   image: string;
@@ -9,6 +10,7 @@ interface IFriends {
   innerHtml: Element;
 }
 const Sidebar = () => {
+  const { t } = useTranslation();
   const [extractFriend, setExtractFriend] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState<IFriends[]>([]);
   const [friends, setFriends] = useState<IFriends[]>([]);
@@ -20,12 +22,10 @@ const Sidebar = () => {
   useEffect(() => {
     const extractChats = () => {
       const friends: IFriends[] = [];
-      const chatContainer = document.querySelector('[aria-label="Chats"]');
+      const chatContainer = document.querySelector("[role='grid']");
 
       if (chatContainer) {
-        const chatDivs = chatContainer.querySelectorAll(
-          'div.x78zum5.xdt5ytf[data-virtualized="false"]'
-        );
+        const chatDivs = chatContainer.querySelectorAll("[role='row']");
 
         chatDivs.forEach((chatDiv, idx) => {
           const friendName = chatDiv.querySelector(
@@ -54,12 +54,17 @@ const Sidebar = () => {
     extractChats();
   }, [extractFriend]);
 
+  useEffect(() => {
+    const fbLang = document.documentElement.lang;
+    i18n.changeLanguage(fbLang);
+  }, []);
+
   const handleChatAction = async (action: "archive" | "delete") => {
     for (let i = 0; i < selectedFriend.length; i++) {
       const friend = selectedFriend[i];
 
       const menuDiv = friend.innerHtml?.querySelector(
-        '[aria-label="Menu"]'
+        '[aria-label][role="button"]'
       ) as HTMLElement;
 
       if (!menuDiv) {
@@ -110,8 +115,6 @@ const Sidebar = () => {
         setFriends(filterFriend);
         toast.success(`Friend archived: ${friend.name}`);
       } else if (action === "delete") {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-
         const actionModal = document.querySelector(
           `[role="dialog"]`
         ) as HTMLElement;
@@ -120,13 +123,12 @@ const Sidebar = () => {
           continue;
         }
 
-        const buttons = actionModal.querySelectorAll(
-          '[aria-label="Delete chat"]'
-        );
-        const confirmButton = buttons[buttons.length - 1] as HTMLElement;
+        const buttons = actionModal.querySelectorAll('[role="button"]');
+        const confirmButton = buttons[buttons.length - 2] as HTMLElement;
 
         if (confirmButton) {
           confirmButton.click();
+          toast.success(`Friend deleted: ${friend.name}`);
           await new Promise((resolve) => setTimeout(resolve, 1000));
           const filterFriend = friends.filter((f) => f.id !== friend.id);
 
@@ -140,21 +142,21 @@ const Sidebar = () => {
 
   return (
     <>
-      <div className="fixed top-0 right-0 w-[400px] bg-white p-2 z-[9999] overflow-y-auto max-h-screen shadow-lg">
+      <div className="fixed top-0 right-0 w-[500px] bg-white p-2 z-[9999] overflow-y-auto max-h-screen shadow-lg">
         <div className="flex justify-end">
           <button
             onClick={handleCloseSidebar}
             className="absolute top-0 right-0 cursor-pointer p-2 text-white bg-red-500"
           >
-            Close
+            {t("close")}
           </button>
         </div>
         <div className="flex justify-between mt-10">
           <label
             htmlFor="selectAll"
-            className="bg-blue-500 text-white rounded-md px-2 py-1 hover:bg-blue-600 transition flex items-center gap-3 cursor-pointer"
+            className="bg-blue-500 text-white rounded-md px-2  hover:bg-blue-600 transition flex items-center gap-3 cursor-pointer"
           >
-            <p>Select All</p>
+            <p> {t("select_all")}</p>
             <input
               onChange={() =>
                 setSelectedFriend(selectedFriend?.length > 0 ? [] : friends)
@@ -168,15 +170,15 @@ const Sidebar = () => {
 
           <button
             onClick={() => handleChatAction("delete")}
-            className="bg-blue-500 text-white rounded-md px-2 py-1 hover:bg-blue-600 transition"
+            className="bg-blue-500 text-white rounded-md px-2  hover:bg-blue-600 transition"
           >
-            Delete Selected Chat
+            {t("delete_selected_chat")}
           </button>
           <button
             onClick={() => handleChatAction("archive")}
-            className="bg-blue-500 text-white rounded-md px-2 py-1 hover:bg-blue-600 transition"
+            className="bg-blue-500 text-white rounded-md px-2  hover:bg-blue-600 transition"
           >
-            Archive Selected Chat
+            {t("archive_selected_chat")}
           </button>
         </div>
         <ul className="flex flex-col gap-2 mt-5">

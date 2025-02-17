@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 const ArchiveMessagePopup = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const handleShowSidebar = async () => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -24,6 +24,14 @@ const ArchiveMessagePopup = () => {
         </h5>
       </div>
       <div className="my-5 px-5">
+        <div
+          className="bg-gradient-to-r from-[#f0e6d6] to-white text-gray-700 p-4 rounded-lg font-medium shadow-lg opacity-100 translate-y-0 animate-[flipIn_1s] mb-3"
+          role="alert"
+        >
+          <label>
+            <p className="text-sm">{t("change_lang_description")}</p>
+          </label>
+        </div>
         <a
           onClick={handleShowSidebar}
           className="w-full bg-[#2196f3] text-white px-3 py-2 rounded-md font-bold text-lg cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg inline-block text-center"

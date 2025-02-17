@@ -16,10 +16,8 @@ const NavigateMessagePagePopup = () => {
           role="alert"
         >
           <label>
-            <h4 className="text-lg font-semibold">😔 Oops! Wrong Page! 💥</h4>
-            <p className="text-sm">
-              👉 Please click the button below to proceed to the correct page.🧭
-            </p>
+            <h4 className="text-lg font-semibold">{t("wrong_page")} </h4>
+            <p className="text-sm">{t("navigate_fb_message_description")}</p>
           </label>
         </div>
         <a
