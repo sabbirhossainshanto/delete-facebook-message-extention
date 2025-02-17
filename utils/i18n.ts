@@ -7,15 +7,15 @@ const resources = {
   en: {
     translation: {
       delete_facebook_message: "Delete Facebook Messages",
-      archive_message: "Archive Messages",
+      open_message_sidebar: "Open Message Sidebar",
       language: "Language",
-      navigate_fb_messages: "Click to go to facebook messages",
+      navigate_fb_messages: "Go To Facebook Messages",
     },
   },
   bn: {
     translation: {
       delete_facebook_message: "ফেসবুক মেসেজ মুছুন",
-      archive_message: "মেসেজ আর্কাইভ করুন",
+      open_message_sidebar: "Open Message Sidebar",
       language: "ভাষা",
       navigate_fb_messages: "যান",
     },

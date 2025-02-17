@@ -13,7 +13,7 @@ export default defineConfig({
     content_scripts: [
       {
         matches: ["<all_urls>"],
-        js: ["content-script/content.js"],
+        js: ["./content-scripts/content.js"],
       },
     ],
   },

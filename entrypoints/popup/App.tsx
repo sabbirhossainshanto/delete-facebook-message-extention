@@ -21,7 +21,7 @@ function App() {
       }
       if (tabs?.[0]?.id) {
         chrome.tabs.detectLanguage(tabs[0].id, async function (lang) {
-          console.log(lang);
+          // console.log(lang);
           await storage.setItem("local:language", lang);
           i18n.changeLanguage(lang);
         });

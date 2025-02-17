@@ -4,24 +4,29 @@ const NavigateMessagePagePopup = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="bg-white h-full">
+    <div className="h-full">
       <div className="bg-[#2196f3] p-5 text-[18px]">
         <h5 className="text-center text-white">
-          {" "}
-          {t("delete_facebook_message")}{" "}
+          {t("delete_facebook_message")}
         </h5>
       </div>
       <div className="my-5 px-5">
-        <p className="text-gray-500 max-w-[100ch] text-center text-sm">
-          You're on the wrong page. Head back to Facebook messages and click the
-          extension icon again.
-        </p>
+        <div
+          className="bg-gradient-to-r from-[#f0e6d6] to-white text-gray-700 p-4 rounded-lg font-medium shadow-lg opacity-100 translate-y-0 animate-[flipIn_1s] mb-3"
+          role="alert"
+        >
+          <label>
+            <h4 className="text-lg font-semibold">😔 Oops! Wrong Page! 💥</h4>
+            <p className="text-sm">
+              👉 Please click the button below to proceed to the correct page.🧭
+            </p>
+          </label>
+        </div>
         <a
           onClick={() => window.close()}
           target="_Main"
           href="https://web.facebook.com/messages"
-          className="bg-[#2196f3] text-center px-5 my-5 py-2  rounded-md w-full h-[30px] text-white flex flex-col justify-center items-center border-none"
-          style={{ fontWeight: "bold", display: "inline-block" }}
+          className="w-full bg-[#2196f3] text-white px-3 py-2 rounded-md font-bold text-lg cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg inline-block text-center"
         >
           {t("navigate_fb_messages")}
         </a>
